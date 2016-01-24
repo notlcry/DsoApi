@@ -1,0 +1,435 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "DSO API",
+        "description": "the api of dso",
+        "version": "1.0.0"
+    },
+    "host": "localhost:8282",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/dso/sa",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/accounts": {
+            "get": {
+                "summary": "get all account",
+                "description": "this endpoint returns all account's\n",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "the start page.",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "item size pre page.",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    }
+                ],
+                "tags": [
+                    "DsoSaClient"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/PageAccount"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/account/{accountId}": {
+            "get": {
+                "summary": "get the account info by accountId",
+                "description": "this endpoint returns all account's info, include group,user,vnf.\n",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "account id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DsoSaClient"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/AccountInfo"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/vlan/{accountId}": {
+            "get": {
+                "summary": "get the account's vlan data by account Id",
+                "description": "this endpoint returns the account's vlan info\n",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "account id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "tags": [
+                    "DsoSaClient"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/VlanSO"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/vlan": {
+            "post": {
+                "summary": "create the account's vlan data",
+                "description": "this endpoint returns the account's vlan info\n",
+                "parameters": [
+                    {
+                        "name": "vlan",
+                        "in": "body",
+                        "description": "create vlan info ",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/VlanSO"
+                        }
+                    }
+                ],
+                "tags": [
+                    "DsoSaClient"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        },
+        "AccountSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "accountName": {
+                    "type": "string"
+                },
+                "accountEmail": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "newpassword": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "Accounts": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AccountSO"
+                    }
+                }
+            }
+        },
+        "HostSO": {
+            "type": "object",
+            "properties": {
+                "mac": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "hostName": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "hosts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/HostSO"
+                    }
+                }
+            }
+        },
+        "UserGroupSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "groupname": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserSO"
+                    }
+                },
+                "servers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/HostSO"
+                    }
+                }
+            }
+        },
+        "InstanceSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "manageip": {
+                    "type": "string"
+                },
+                "publicip": {
+                    "type": "string"
+                },
+                "publicgateway": {
+                    "type": "string"
+                },
+                "publicnetmask": {
+                    "type": "string"
+                },
+                "serviceip": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "ServicesSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "servicename": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "instances": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/InstanceSO"
+                    }
+                }
+            }
+        },
+        "CpeSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "cpeip": {
+                    "type": "string"
+                },
+                "cpesn": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "SiteSO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "sitename": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "cpes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CpeSO"
+                    }
+                }
+            }
+        },
+        "AccountInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "accountName": {
+                    "type": "string"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserGroupSO"
+                    }
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServicesSO"
+                    }
+                },
+                "sites": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SiteSO"
+                    }
+                }
+            }
+        },
+        "PageAccount": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "records": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "results": {
+                    "$ref": "#/definitions/Accounts"
+                },
+                "rows": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "total": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "VlanSO": {
+            "type": "object",
+            "properties": {
+                "accountid": {
+                    "type": "string"
+                },
+                "valnid": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
